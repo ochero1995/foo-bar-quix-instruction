@@ -7,15 +7,26 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class FooBarQuixFormComponent implements OnInit {
 
+  fooBarForm: FormGroup;
+  newNumber: number = 0;
 
-  constructor() {
+  @Output() submitNumberOutput = new EventEmitter<number>();
 
+  constructor(private fb: FormBuilder) {
+    this.createForm();
   }
 
   ngOnInit(): void {
   }
 
-  submitNumber(): void {
+  createForm() {
+    this.fooBarForm = this.fb.group({
+      inputNumber: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],
+    });
   }
 
+  submitNumber(inputNumber: number): void {
+    this.fooBarForm.reset(inputNumber);
+    this.submitNumberOutput.emit(inputNumber);
+  }
 }

@@ -1,3 +1,25 @@
-<div class="container"> 
-    To Be Completed
+<div class="container">
+    <form [formGroup]="fooBarForm">
+        <div class="form-group">
+            <h3>Number to convert</h3>
+            <input 
+                class="form-control" 
+                #newNumber 
+                formControlName="inputNumber" 
+                placeholder="inputNumber" />
+
+            <div *ngIf="fooBarForm.controls['inputNumber'].invalid && (fooBarForm.controls['inputNumber'].dirty || fooBarForm.controls['inputNumber'].touched)" class="alert alert-danger">
+                <div *ngIf="fooBarForm.controls['inputNumber'].errors.required">
+                    Value is required.
+                </div>
+                <div *ngIf="fooBarForm.controls['inputNumber'].errors.pattern">
+                    Number is required.
+                </div>
+            </div>
+
+            <button class="btn btn-primary" [disabled]="!fooBarForm.valid" (click)="submitNumber(newNumber.value)">
+                Convert
+            </button>
+        </div>
+    </form>
 </div>
