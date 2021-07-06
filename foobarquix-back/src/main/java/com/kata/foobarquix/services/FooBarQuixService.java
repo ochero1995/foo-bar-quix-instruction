@@ -1,48 +1,31 @@
 package com.kata.foobarquix.services;
 
-import com.kata.foobarquix.functions.FooBarPredicate;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FooBarQuixService {
     public String convertNumber(int inputNumber) {
-        FooBarPredicate fooBarDivByOrContainsThree = n -> n % 3 == 0 || hasNumber(n, 3);
-        FooBarPredicate fooBarDivByFive = n -> n % 5 == 0 || hasNumber(n, 5);
+        StringBuilder sb = new StringBuilder();
+        String inputNumberStr = String.valueOf(inputNumber);
 
-        if(fooBarDivByFive.evaluate(inputNumber) && fooBarDivByOrContainsThree.evaluate(inputNumber)){
-            return getComputedResult(inputNumber);
-        } else if(fooBarDivByOrContainsThree.evaluate(inputNumber)){
-            return getComputedResult(inputNumber, "3", "Foo");
-        } else if (fooBarDivByFive.evaluate(inputNumber)){
-            return getComputedResult(inputNumber, "5", "Bar");
-        } else if(hasNumber(inputNumber, 7)){
-            return getComputedResult(inputNumber, "7", "Quix");
-        } else {
+        //Divisors take higher precedence!
+        if(inputNumber % 3 == 0) sb.append("Foo");
+        if(inputNumber % 5 == 0) sb.append("Bar");
+
+        inputNumberStr = inputNumberStr.replaceAll("[^357]", "");
+
+        inputNumberStr = inputNumberStr.replace("3", "Foo");
+        inputNumberStr = inputNumberStr.replace("5", "Bar");
+        inputNumberStr = inputNumberStr.replace("7", "Quix");
+
+        sb.append(inputNumberStr);
+
+        String convertedNumber = sb.toString();
+
+        if(!convertedNumber.isEmpty()){
+            return convertedNumber;
+        }else {
             return String.valueOf(inputNumber);
         }
-    }
-
-    @NotNull
-    private String getComputedResult(int inputNumber) {
-        String result = String.valueOf(inputNumber);
-        result = result.replace("3", "Foo");
-        result = result.replace("5", "Bar");
-        return result;
-    }
-
-    @NotNull
-    private String getComputedResult(int inputNumber, String target, String replacement) {
-        String stringNumber = String.valueOf(inputNumber);
-        stringNumber = stringNumber.replace(target, replacement);
-        return stringNumber;
-    }
-
-    private boolean hasNumber(int n, int searchNumber){
-        while (n > 0){
-            if(n % 10 == searchNumber) return true;
-            n = n / 10;
-        }
-        return false;
     }
 }

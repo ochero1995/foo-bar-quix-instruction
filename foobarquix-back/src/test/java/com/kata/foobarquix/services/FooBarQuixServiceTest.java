@@ -1,8 +1,13 @@
 package com.kata.foobarquix.services;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,44 +24,21 @@ class FooBarQuixServiceTest {
     private FooBarQuixService fooBarService;
 
     @Test
-    public void test_ifNumberDivisibleByThreeReplaceThreeByFoo(){
+    public void test_if_divisible_by_3_should_return_Foo(){
         //GIVEN
-        int inputNumber = 33;
-        //WHEN
-        String result = fooBarService.convertNumber(inputNumber);
-
-        //THEN
-        assertEquals("FooFoo", result);
-    }
-
-    @Test
-    public void test_ifNumberContainsThreeReplaceThreeByFoo(){
-        //GIVEN
-        int inputNumber = 13;
+        int inputNumber = 9;
 
         //WHEN
         String result = fooBarService.convertNumber(inputNumber);
 
         //THEN
-        assertEquals("1Foo", result);
+        assertEquals("Foo", result);
     }
 
     @Test
-    public void test_ifOtherNumberContainsThreeReplaceThreeByFoo(){
+    public void test_if_divisible_by_5_should_return_Bar(){
         //GIVEN
-        int inputNumber = 23;
-
-        //WHEN
-        String result = fooBarService.convertNumber(inputNumber);
-
-        //THEN
-        assertEquals("2Foo", result);
-    }
-
-    @Test
-    public void test_ifNumberDivisibleByFiveReplaceFiveWithBar(){
-        //GIVEN
-        int inputNumber = 5;
+        int inputNumber = 10;
 
         //WHEN
         String result = fooBarService.convertNumber(inputNumber);
@@ -66,31 +48,7 @@ class FooBarQuixServiceTest {
     }
 
     @Test
-    public void test_ifNumberContainsFiveReplaceFiveWithBar(){
-        //GIVEN
-        int inputNumber = 52;
-
-        //WHEN
-        String result = fooBarService.convertNumber(inputNumber);
-
-        //THEN
-        assertEquals("Bar2", result);
-    }
-
-    @Test
-    public void test_ifDivisibleByThreeButDoesntContainFiveShouldNotChangeNumber(){
-        //GIVEN
-        int inputNumber = 10;
-
-        //WHEN
-        String result = fooBarService.convertNumber(inputNumber);
-
-        //THEN
-        assertEquals("10", result);
-    }
-
-    @Test
-    public void test_ifHasSevenReplaceSevenWithQuix(){
+    public void test_if_contains_7_should_return_quix(){
         //GIVEN
         int inputNumber = 7;
 
@@ -102,45 +60,55 @@ class FooBarQuixServiceTest {
     }
 
     @Test
-    public void test_ifContainsFiveThreeShouldReplaceFiveAndThreeWithBarFooAccordingly(){
+    public void test_if_divisible_by_three_and_contains_3(){
         //GIVEN
-        int inputNumber = 53;
-        int inputNumber2 = 500003;
+        int inputNumber = 3;
+        int inputNumber2 = 33;
 
         //WHEN
         String result = fooBarService.convertNumber(inputNumber);
         String result2 = fooBarService.convertNumber(inputNumber2);
 
         //THEN
-        assertEquals("BarFoo", result);
-        assertEquals("Bar0000Foo", result2);
+        assertEquals("FooFoo", result);
+        assertEquals("FooFooFoo", result2);
     }
 
     @Test
-    public void test_ifContainsThreeFiveFooBarAccordingly(){
+    public void test_if_no_condition_is_true_then_return_the_input_number(){
         //GIVEN
-        int inputNumber = 35;
-        int inputNumber2 = 300005;
-
-        //WHEN
-        String result = fooBarService.convertNumber(inputNumber);
-        String result2 = fooBarService.convertNumber(inputNumber2);
-
-        //THEN
-        assertEquals("FooBar", result);
-        assertEquals("Foo0000Bar", result2);
-    }
-
-    @Test
-    public void test_ifNoneOfTheConditionsAreTrueReturnOriginalNumber(){
-        //GIVEN
-        int inputNumber = 22;
+        int inputNumber = 11;
 
         //WHEN
         String result = fooBarService.convertNumber(inputNumber);
 
         //THEN
-        assertEquals("22", result);
+        assertEquals("11", result);
     }
+
+    @ParameterizedTest
+    @MethodSource("getInputNumbersForConvertNumber")
+    public void test_cases_provided_in_the_example_from_frontend(int input, String expected){
+        assertEquals(expected, fooBarService.convertNumber(input));
+    }
+
+    private static Stream<Arguments> getInputNumbersForConvertNumber(){
+        return Stream.of(
+                Arguments.of(1, "1"),
+                Arguments.of(3, "FooFoo"),
+                Arguments.of(5, "BarBar"),
+                Arguments.of(7, "Quix"),
+                Arguments.of(9, "Foo"),
+                Arguments.of(51, "FooBar"),
+                Arguments.of(53, "BarFoo"),
+                Arguments.of(33, "FooFooFoo"),
+                Arguments.of(27, "FooQuix"),
+                Arguments.of(15, "FooBarBar")
+        );
+    }
+
+
+
+
 
 }
